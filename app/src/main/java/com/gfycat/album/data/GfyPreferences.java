@@ -51,8 +51,12 @@ public class GfyPreferences {
         return preferences.getString(GfyConstants.GFY_PREFERENCES_PASSWORD, "");
     }
 
-    public static String getToken(SharedPreferences preferences) {
-        return preferences.getString(GfyConstants.GFY_PREFERENCES_TOKEN, "");
+    public static String getAccessToken(SharedPreferences preferences) {
+        return preferences.getString(GfyConstants.GFY_PREFERENCES_ACCESS_TOKEN, "");
+    }
+
+    public static String getRefreshToken(SharedPreferences preferences) {
+        return preferences.getString(GfyConstants.GFY_PREFERENCES_REFRESH_TOKEN, "");
     }
 
     /** SET PREFERENCES FUNCTIONALITY __________________________________________________________ **/
@@ -75,9 +79,15 @@ public class GfyPreferences {
         prefEdit.apply();
     }
 
-    public static void setToken(String token, SharedPreferences preferences) {
+    public static void setAccessToken(String token, SharedPreferences preferences) {
         SharedPreferences.Editor prefEdit = preferences.edit();
-        prefEdit.putString(GfyConstants.GFY_PREFERENCES_PASSWORD, token);
+        prefEdit.putString(GfyConstants.GFY_PREFERENCES_ACCESS_TOKEN, token);
+        prefEdit.apply();
+    }
+
+    public static void setRefreshToken(String token, SharedPreferences preferences) {
+        SharedPreferences.Editor prefEdit = preferences.edit();
+        prefEdit.putString(GfyConstants.GFY_PREFERENCES_REFRESH_TOKEN, token);
         prefEdit.apply();
     }
 }
