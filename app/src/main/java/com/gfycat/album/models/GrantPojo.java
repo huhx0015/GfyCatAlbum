@@ -14,6 +14,12 @@ public class GrantPojo {
     @SerializedName("client_secret")
     @Expose
     private String clientSecret;
+    @SerializedName("username")
+    @Expose
+    private String username;
+    @SerializedName("password")
+    @Expose
+    private String password;
 
     public String getGrantType() {
         return grantType;
@@ -39,4 +45,19 @@ public class GrantPojo {
         this.clientSecret = clientSecret;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

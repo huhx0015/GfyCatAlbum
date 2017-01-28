@@ -59,7 +59,7 @@ public class GfyPreferences {
 
     public static void setUserLoggedIn(boolean isLoggedIn, SharedPreferences preferences) {
         SharedPreferences.Editor prefEdit = preferences.edit();
-        prefEdit.putString(GfyConstants.GFY_PREFERENCES_USER_LOGGED_IN, isLoggedIn);
+        prefEdit.putBoolean(GfyConstants.GFY_PREFERENCES_USER_LOGGED_IN, isLoggedIn);
         prefEdit.apply();
     }
 
