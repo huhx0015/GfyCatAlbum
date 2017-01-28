@@ -84,34 +84,4 @@ public class GrantResponsePojo {
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
-
-    public ErrorMessage getErrorMessage() {
-        return errorMessage;
-    }
-
-    public class ErrorMessage {
-
-        @SerializedName("code")
-        @Expose
-        private String code;
-        @SerializedName("description")
-        @Expose
-        private String description;
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-    }
 }
