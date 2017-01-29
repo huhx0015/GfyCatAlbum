@@ -22,6 +22,7 @@ import butterknife.Unbinder;
 public class SaveGfycatDialog extends DialogFragment {
 
     private Context context;
+    private String url;
     private Unbinder unbinder;
 
     @BindView(R.id.gfycat_name_field) EditText nameField;
@@ -47,12 +48,13 @@ public class SaveGfycatDialog extends DialogFragment {
 
     /** CONSTRUCTOR METHODS ____________________________________________________________________ **/
 
-    public SaveGfycatDialog(Context context) {
+    public SaveGfycatDialog(String url, Context context) {
+        this.url = url;
         this.context = context;
     }
 
-    public static SaveGfycatDialog newInstance(Context context) {
-        return new SaveGfycatDialog(context);
+    public static SaveGfycatDialog newInstance(String url, Context context) {
+        return new SaveGfycatDialog(url, context);
     }
 
     /** FRAGMENT LIFECYCLE METHODS _____________________________________________________________ **/
@@ -63,6 +65,7 @@ public class SaveGfycatDialog extends DialogFragment {
         View save_gfycat_dialog_view = inflater.inflate(R.layout.dialog_save, container, false);
         unbinder = ButterKnife.bind(this, save_gfycat_dialog_view);
         getDialog().setCancelable(false);
+        initView();
         return save_gfycat_dialog_view;
     }
 
@@ -70,5 +73,9 @@ public class SaveGfycatDialog extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    private void initView() {
+        linkField.setText(url);
     }
 }

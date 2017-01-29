@@ -60,14 +60,14 @@ public class HandleShareActivity extends AppCompatActivity {
         if (intent.ACTION_SEND.equals(action) && type != null)
         {
             handleViewAction();
+            handleSendText(intent);
             Log.d("STEVE", "ACTION_SEND");
         }
         else if (intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
             handleViewAction();
+            handleSendText(intent);
             Log.d("STEVE", "ACTION_SEND_MULTIPLE");
         }
-
-        displaySaveGfycatDialog(); // TEST
     }
 
     @Override
@@ -89,13 +89,21 @@ public class HandleShareActivity extends AppCompatActivity {
         // TODO: Display a DialogFragment here. Once new gfycat data has been entered, make a call to create gfycat endpoint; also store reference locally.
     }
 
+    private void handleSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+            String url = sharedText.substring(sharedText.indexOf("http"));
+            displaySaveGfycatDialog(url);
+        }
+    }
+
     private void initView() {
         handleShareProgressBar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#ee00d4"), android.graphics.PorterDuff.Mode.SRC_ATOP);
     }
 
-    private void displaySaveGfycatDialog() {
+    private void displaySaveGfycatDialog(String url) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        SaveGfycatDialog saveGfycatDialog = SaveGfycatDialog.newInstance(this);
+        SaveGfycatDialog saveGfycatDialog = SaveGfycatDialog.newInstance(url, this);
         saveGfycatDialog.show(fragmentManager, SaveGfycatDialog.class.getSimpleName());
     }
 
