@@ -65,13 +65,15 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences gfyPreferences = GfyPreferences.initializePreferences(this);
         boolean isUserLoggedIn = GfyPreferences.getUserLoggedIn(gfyPreferences);
 
-        if (isUserLoggedIn) {
-            refreshToken();
-        } else {
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivity(loginIntent);
-        }
+        // TODO: Disabled user log in, using anonymous sessions.
+//        if (isUserLoggedIn) {
+//            refreshToken();
+//        } else {
+//            Intent loginIntent = new Intent(this, LoginActivity.class);
+//            startActivity(loginIntent);
+//        }
 
+        refreshToken();
         finish();
     }
 
