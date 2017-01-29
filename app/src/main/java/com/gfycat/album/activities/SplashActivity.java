@@ -27,15 +27,19 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences gfyPreferences = GfyPreferences.initializePreferences(this);
         boolean isUserLoggedIn = GfyPreferences.getUserLoggedIn(gfyPreferences);
 
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        startActivity(mainIntent);
+
+/*
         if (isUserLoggedIn) {
 
-            // TODO: Check if token is valid first.
             Intent mainIntent = new Intent(this, MainActivity.class);
             startActivity(mainIntent);
         } else {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivity(loginIntent);
         }
+*/
 
         finish();
     }

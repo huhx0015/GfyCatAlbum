@@ -10,12 +10,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import com.gfycat.album.DatabaseHelper;
 import com.gfycat.album.R;
 import com.gfycat.album.models.Gif;
+import com.gfycat.album.models.GifsCompletionView;
 import com.gfycat.album.models.Tag;
+<<<<<<< HEAD:app/src/main/java/com/gfycat/album/activities/MainActivity.java
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+=======
+import com.tokenautocomplete.TokenCompleteTextView;
+
+>>>>>>> 5a00db723fd76ef846757072ad0bd73167a6c1bb:app/src/main/java/com/gfycat/album/MainActivity.java
 
 import java.util.ArrayList;
 
@@ -25,11 +32,12 @@ import butterknife.Unbinder;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements TokenCompleteTextView.TokenListener{
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
     private DatabaseHelper dbhelper = new DatabaseHelper(this);
+<<<<<<< HEAD:app/src/main/java/com/gfycat/album/activities/MainActivity.java
     private Unbinder unbinder;
 
     // RECYCLERVIEW VARIABLES
@@ -39,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
+=======
+    private GifsCompletionView completionView;
+>>>>>>> 5a00db723fd76ef846757072ad0bd73167a6c1bb:app/src/main/java/com/gfycat/album/MainActivity.java
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
 //        dbhelper.deleteDB(); // //delete the db: remove it when actually in use.
         dbhelper.initialize();
-
         Gif testGif = initTestGif();
         dbhelper.updateGifs(testGif);
 
@@ -70,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("onCreate: ", gfyURL);
         }
 
+<<<<<<< HEAD:app/src/main/java/com/gfycat/album/activities/MainActivity.java
     }
 
     @Override
@@ -86,6 +97,25 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView() {
         dragDropManager = new RecyclerViewDragDropManager();
         
+=======
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        initCompletionView();
+
+    }
+
+    private void initCompletionView() {
+        //test section for completion view.
+        ArrayList<String> searchTerms = new ArrayList<>();
+        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, searchTerms);
+
+        completionView = (GifsCompletionView)findViewById(R.id.searchView);
+        completionView.setTokenListener(this);
+        completionView.setAdapter(adapter);
+        completionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
+>>>>>>> 5a00db723fd76ef846757072ad0bd73167a6c1bb:app/src/main/java/com/gfycat/album/MainActivity.java
     }
 
     private Gif initTestGif(){
@@ -124,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-            Toast.makeText(this,"touch touch", Toast.LENGTH_LONG).show();
+//            Toast.makeText(this,"touch touch", Toast.LENGTH_LONG).show();
             return true;
         }
 
@@ -134,5 +164,16 @@ public class MainActivity extends AppCompatActivity {
     //increments the current index.
     private int incrementIndex(){
         return dbhelper.getIndex();
+    }
+
+
+    @Override
+    public void onTokenAdded(Object token) {
+        Toast.makeText(this, "token added", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTokenRemoved(Object token) {
+        Toast.makeText(this, "token removed", Toast.LENGTH_SHORT).show();
     }
 }
