@@ -1,4 +1,4 @@
-package com.gfycat.album.models;
+package com.gfycat.album.ui.views;
 
 import android.app.Activity;
 import android.content.Context;
@@ -41,7 +41,5 @@ public class GifsCompletionView extends TokenCompleteTextView<String> {
     public void addObject(String object) {
         super.addObject(object);
     }
-
-
 }
 

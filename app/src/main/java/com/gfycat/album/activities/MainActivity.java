@@ -11,15 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import com.gfycat.album.utils.DatabaseHelper;
 import com.gfycat.album.R;
 import com.gfycat.album.models.Gif;
-import com.gfycat.album.models.GifsCompletionView;
+import com.gfycat.album.ui.views.GifsCompletionView;
 import com.gfycat.album.models.Tag;
-import com.gfycat.album.ui.GifRecyclerViewAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+import com.gfycat.album.ui.adapters.GifRecyclerViewAdapter;
 import com.tokenautocomplete.TokenCompleteTextView;
 import java.util.ArrayList;
 import butterknife.BindView;
@@ -33,18 +33,24 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
+    // DATABASE VARIABLES:
     private DatabaseHelper dbhelper = new DatabaseHelper(this);
+
+    // LAYOUT VARIABLES:
     private Unbinder unbinder;
 
-    // RECYCLERVIEW VARIABLES
-    private RecyclerViewDragDropManager dragDropManager;
+    // LOGGING VARIABLES:
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    // SEARCH VARIABLES
+    private String searchQuery = "";
+
+    // VIEW INJECTION VARIABLES:
+    @BindView(R.id.gif_completion_view) GifsCompletionView gifsCompletionView;
     @BindView(R.id.activity_main_recyclerview) RecyclerView gfyRecyclerView;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
-
-    private GifsCompletionView completionView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +90,11 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         unbinder.unbind();
     }
 
+    /** ACTIVITY OVERRIDE METHODS ______________________________________________________________ **/
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
@@ -94,6 +103,30 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query;
+                displayGifsCompletionView(!searchQuery.isEmpty());
+                setCompletionView();
+                return true;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchQuery = "";
+                displayGifsCompletionView(false);
+                setCompletionView();
+                return true;
+            }
+        });
 
         return true;
     }
@@ -107,7 +140,6 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-//            Toast.makeText(this,"touch touch", Toast.LENGTH_LONG).show();
             return true;
         }
 
@@ -123,6 +155,8 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     public void onTokenRemoved(Object token) {
         Toast.makeText(this, "token removed", Toast.LENGTH_SHORT).show();
     }
+
+    /** LAYOUT METHODS _________________________________________________________________________ **/
 
     private void initView() {
         initToolbar();
@@ -142,15 +176,36 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     }
 
     private void initCompletionView() {
-        //test section for completion view.
         ArrayList<String> searchTerms = new ArrayList<>();
-        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, searchTerms);
-
-        completionView = (GifsCompletionView)findViewById(R.id.searchView);
-        completionView.setTokenListener(this);
-        completionView.setAdapter(adapter);
-        completionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
+        ArrayAdapter completionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, searchTerms);
+        gifsCompletionView.setTokenListener(this);
+        gifsCompletionView.setAdapter(completionAdapter);
+        gifsCompletionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
     }
+
+    private void setRecyclerView(OrderedRealmCollection<Gif> data) {
+        GifRecyclerViewAdapter gifRecyclerViewAdapter = new GifRecyclerViewAdapter(data, this);
+        gfyRecyclerView.setAdapter(gifRecyclerViewAdapter);
+    }
+
+    private void setCompletionView() {
+        gifsCompletionView.clear();
+        String[] searchTerms = searchQuery.split("\\s+");
+        for (String term : searchTerms) {
+            gifsCompletionView.addObject(term);
+        }
+    }
+
+    // displayGifsCompletionView(): Shows/hides the gifsCompletionView.
+    private void displayGifsCompletionView(boolean isDisplay) {
+        if (isDisplay) {
+            gifsCompletionView.setVisibility(View.VISIBLE);
+        } else {
+            gifsCompletionView.setVisibility(View.GONE);
+        }
+    }
+
+    /** DATABASE METHODS _______________________________________________________________________ **/
 
     private Gif initTestGif(String gifName, String desc, String videoUrl){
         Tag testTag = new Tag("#cats");
@@ -162,11 +217,6 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         String thumbnailUrl="https://thumbs.gfycat.com/AdmiredNiftyCatbird-mobile.jpg";
 //        String thumbnailUrl="https://thumbs.gfycat.com/IllfatedPleasantIrishterrier-mobile.jpg";
         return new Gif(tagList, gifName, desc, videoUrl, thumbnailUrl, incrementIndex());
-    }
-
-    private void setRecyclerView(OrderedRealmCollection<Gif> data) {
-        GifRecyclerViewAdapter gifRecyclerViewAdapter = new GifRecyclerViewAdapter(data, this);
-        gfyRecyclerView.setAdapter(gifRecyclerViewAdapter);
     }
 
     //increments the current index.
