@@ -18,4 +18,8 @@
     <string name="empty_space_description">Go share any gif with GfyCatnip and\nyou will see it here</string>
     <string name="search_gif_link_text"><u>Search for Awesome Gifs!</u></string>
 
+    <!--ACTION DIALOG-->
+    <string name="share">Share</string>
+    <string name="edit">Edit</string>
+
 </resources>
