@@ -1,14 +1,12 @@
 package com.gfycat.album.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import com.gfycat.album.R;
 import com.gfycat.album.application.GfyApplication;
-import com.gfycat.album.constants.GfyConstants;
 import com.gfycat.album.data.GfyPreferences;
 import com.gfycat.album.interfaces.RetrofitInterface;
 import com.gfycat.album.models.CreateGfycatPojo;
@@ -19,25 +17,18 @@ import com.gfycat.album.models.Gif;
 import com.gfycat.album.models.StatusGfycatPojo;
 import com.gfycat.album.models.Tag;
 import com.gfycat.album.utils.DatabaseHelper;
-import com.google.common.util.concurrent.Runnables;
 import java.util.ArrayList;
 import javax.inject.Inject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.gfycat.album.R;
-import com.gfycat.album.application.GfyApplication;
 import com.gfycat.album.dialog.SaveGfycatDialog;
-import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -54,6 +45,7 @@ public class HandleShareActivity extends AppCompatActivity {
         @Override
         public void run() {
             handleUploadStatus();
+            uploadStatusHandler.removeCallbacks(handleStatus);
         }
     };
 
