@@ -196,14 +196,14 @@ public class HandleShareActivity extends AppCompatActivity {
                     tags.add(newTag);
                 }
 
-
-
-                Gif newGif = new Gif(tags, saveGfycatName, saveGfycatDescription, gifResponse.getWebmUrl(), gifResponse.getMobilePosterUrl(), dbHelper.getIndex());
+                Gif newGif = new Gif(tags, saveGfycatName, saveGfycatDescription, gifResponse.getGifUrl(), gifResponse.getMobilePosterUrl(), dbHelper.getIndex());
                 dbHelper.updateGifs(newGif);
+                finish();
             }
 
             @Override
             public void onFailure(Call<GfycatPojo> call, Throwable t) {
+                finish();
             }
         });
     }
