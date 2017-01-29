@@ -10,6 +10,9 @@ public class GfyConstants {
     public static final String GFY_GRANT_TYPE_CLIENT = "client_credentials";
     public static final String GFY_GRANT_TYPE_PASSWORD = "password";
 
+    // LOGIN:
+    public static final String GFY_LOGIN_STATE = "GFYCATNIPLOVE";
+
     // SHARED PREFERENCES:
     public static final String GFY_PREFERENCES = "gfy_preferences";
     public static final String GFY_PREFERENCES_LOGIN = "gfy_login";
@@ -21,4 +24,6 @@ public class GfyConstants {
     // URL:
     public static final String BASE_URL = "https://api.gfycat.com/v1/";
     public static final String TEST_URL = "https://api.gfycat.com/v1test/";
+    public static final String LOGIN_BASE_URL = "https://gfycat.com/";
+    public static final String REDIRECT_URL = "gfycat://auth";
 }
