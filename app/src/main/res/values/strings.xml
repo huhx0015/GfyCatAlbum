@@ -11,5 +11,6 @@
     <string name="login">LOGIN</string>
     <string name="retry">RETRY</string>
     <string name="login_error_message">Unable to login, please try again.</string>
+    <string name="title_activity_handle_share">HandleShareActivity</string>
 
 </resources>
