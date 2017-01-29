@@ -233,7 +233,5 @@ public class HandleShareActivity extends AppCompatActivity {
         this.saveGfycatDescription = description;
 
         handleViewAction();
-
-        // TODO: Handle saving action here.
     }
 }

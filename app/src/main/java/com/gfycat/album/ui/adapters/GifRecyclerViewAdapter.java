@@ -39,8 +39,8 @@ public class GifRecyclerViewAdapter extends RealmRecyclerViewAdapter<Gif, GifRec
         GifViewHolder viewHolder = new GifViewHolder(itemView, new GifViewHolder.OnViewHolderClickListener() {
             @Override
             public void onClick(View caller, int position) {
-                Gif gifObject = getData().get(position);
-                ((MainActivity) context).launchVideoIntent(gifObject.getGyfcatURL());
+                //Gif gifObject = getData().get(position);
+                //((MainActivity) context).launchVideoIntent(gifObject.getGyfcatURL());
             }
 
             @Override
