@@ -13,6 +13,7 @@ import com.gfycat.album.data.GfyPreferences;
 import com.gfycat.album.interfaces.RetrofitInterface;
 import com.gfycat.album.models.CreateGfycatPojo;
 import com.gfycat.album.models.CreateGfycatRequest;
+import com.gfycat.album.models.GfyItem;
 import com.gfycat.album.models.GfycatPojo;
 import com.gfycat.album.models.Gif;
 import com.gfycat.album.models.StatusGfycatPojo;
@@ -56,9 +57,6 @@ public class HandleShareActivity extends AppCompatActivity {
         }
     };
 
-    @Inject
-    Retrofit retrofitAdapter;
-
     private Unbinder unbinder;
 
     // SAVE GFYCAT VARIABLES
@@ -92,9 +90,9 @@ public class HandleShareActivity extends AppCompatActivity {
         type = intent.getType();
 
         if (intent.ACTION_SEND.equals(action) && type != null) {
-            handleViewAction();
+            handleSendText(intent);
         } else if (intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-            handleViewAction();
+            handleSendText(intent);
         }
     }
 
@@ -117,21 +115,15 @@ public class HandleShareActivity extends AppCompatActivity {
 
         RetrofitInterface createGfycatRequest = retrofitAdapter.create(RetrofitInterface.class);
         Call<CreateGfycatPojo> call = createGfycatRequest.createGfycat(GfyPreferences.getAccessToken(GfyPreferences.initializePreferences(this)),
-                                                                        new CreateGfycatRequest("http://i.imgur.com/6PtIS4p.gifv", "some title"));
+                                                                        new CreateGfycatRequest(saveGfycatLink, saveGfycatName));
         call.enqueue(new Callback<CreateGfycatPojo>() {
             @Override
             public void onResponse(Call<CreateGfycatPojo> call, Response<CreateGfycatPojo> response) {
 
                 if (response.isSuccessful()) {
                     CreateGfycatPojo responsePojo = response.body();
-
-                    //sample respose: {"isOk":true,"gfyname":"FrightenedMassiveDoe","secret":"4m29z50ii9gam7vi","uploadType":"fetch","fetchUrl":"http://i.imgur.com/QlxKcey.gif"}
-//                    String newURL = GfyConstants.UPLOADED_URL + responsePojo.getGfyname();
                     curGfyName = responsePojo.getGfyname();
-                    Log.d("STEVE ", curGfyName);
                     handleUploadStatus();
-                    /*
-                    launchMainIntent();*/
                 }
             }
 
@@ -156,7 +148,7 @@ public class HandleShareActivity extends AppCompatActivity {
 
                 if (!status.equals("complete")) {
                     Log.d("STEVE", "calling handler for " + curGfyName);
-                    uploadStatusHandler.postDelayed(handleStatus, 1000);
+                    uploadStatusHandler.postDelayed(handleStatus, 5000);
                 } else {
                     uploadStatusHandler.removeCallbacks(handleStatus);
                     Log.d("STEVE", "handler complete! for " + curGfyName);
@@ -182,41 +174,39 @@ public class HandleShareActivity extends AppCompatActivity {
         call.enqueue(new Callback<GfycatPojo>() {
             @Override
             public void onResponse(Call<GfycatPojo> call, Response<GfycatPojo> response) {
-                GfycatPojo gifResponse = response.body();
+                GfyItem gifResponse = response.body().getGfyItem();
                 ArrayList<Tag> tags = new ArrayList<>();
-
-                Log.d("STEVE", "updating updateGfycatDB");
 
                 if (gifResponse.getTags() != null) {
                     for (String item : gifResponse.getTags()) {
-                        Tag newTag = new Tag("cats");
+                        Tag newTag = new Tag(item);
                         tags.add(newTag);
-                        Log.d("STEVE", "how many of me in item");
                     }
                 }
-                else
-                {
+                else if (saveGfycatTags != null) {
+                    String[] tokens = saveGfycatTags.split("[ .,?!]+");
+                    for(String token: tokens) {
+                        Tag newTag = new Tag(token);
+                        tags.add(newTag);
+                    }
+                }
+                else{
                     Log.d("STEVE", "forcing cat");
                     Tag newTag = new Tag("cats");
                     tags.add(newTag);
                 }
-                //Gif (ArrayList<Tag> tags, @Nullable String userGifName, @Nullable String textDescription, String gyfcatURL, String thumbnailURL, int index){
-
-                if (gifResponse == null){
-                    Log.d("STEVE", "response is null??");
-                }
 
 
-                Gif newGif = new Gif(tags, null, null, gifResponse.getWebmUrl(), gifResponse.getMobilePosterUrl(), dbHelper.getIndex());
+
+                Gif newGif = new Gif(tags, saveGfycatName, saveGfycatDescription, gifResponse.getWebmUrl(), gifResponse.getMobilePosterUrl(), dbHelper.getIndex());
                 dbHelper.updateGifs(newGif);
-
             }
 
             @Override
             public void onFailure(Call<GfycatPojo> call, Throwable t) {
-
             }
         });
+    }
 
     private void handleSendText(Intent intent) {
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -241,6 +231,8 @@ public class HandleShareActivity extends AppCompatActivity {
         this.saveGfycatName = name;
         this.saveGfycatTags = tags;
         this.saveGfycatDescription = description;
+
+        handleViewAction();
 
         // TODO: Handle saving action here.
     }
