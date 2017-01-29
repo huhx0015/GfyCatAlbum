@@ -13,4 +13,22 @@
     tools:context="com.gfycat.album.activities.HandleShareActivity"
     tools:showIn="@layout/activity_handle_share">
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/handle_share_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
+    <TextView
+        android:text="@string/saving"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/handle_share_save_text"
+        android:layout_below="@+id/handle_share_progress_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        android:textColor="@android:color/white" />
+
 </RelativeLayout>
