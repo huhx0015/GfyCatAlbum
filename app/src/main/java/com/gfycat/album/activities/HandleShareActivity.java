@@ -40,6 +40,7 @@ public class HandleShareActivity extends AppCompatActivity {
     String action;
     String type;
     String curGfyName;
+    String gfyId;
     Handler uploadStatusHandler = new Handler();
     private Runnable handleStatus = new Runnable() {
         @Override
@@ -144,6 +145,7 @@ public class HandleShareActivity extends AppCompatActivity {
                 } else {
                     uploadStatusHandler.removeCallbacks(handleStatus);
                     Log.d("STEVE", "handler complete! for " + curGfyName);
+                    gfyId = statusBody.getGfyId();
                     updateGfycatDB();
                 }
             }
@@ -159,7 +161,7 @@ public class HandleShareActivity extends AppCompatActivity {
     void updateGfycatDB() {
         //FrightenedMassiveDoe
         RetrofitInterface statusInterface = retrofitAdapter.create(RetrofitInterface.class);
-        Call<GfycatPojo> call = statusInterface.getGfyCat(GfyPreferences.getAccessToken(GfyPreferences.initializePreferences(this)),curGfyName);
+        Call<GfycatPojo> call = statusInterface.getGfyCat(GfyPreferences.getAccessToken(GfyPreferences.initializePreferences(this)), gfyId);
         final DatabaseHelper dbHelper = new DatabaseHelper(this);
         dbHelper.initialize();
 
