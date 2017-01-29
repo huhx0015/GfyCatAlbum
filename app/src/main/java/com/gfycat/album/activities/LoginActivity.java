@@ -2,6 +2,7 @@ package com.gfycat.album.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,8 +11,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.gfycat.album.R;
 import com.gfycat.album.application.GfyApplication;
@@ -40,9 +41,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
 
-    @BindView(R.id.login_button) Button loginButton;
     @BindView(R.id.login_field) EditText loginField;
     @BindView(R.id.password_field) EditText passwordField;
+    @BindView(R.id.login_progress_bar) ProgressBar loginProgressBar;
     @BindView(R.id.activity_login_layout) RelativeLayout loginActivityLayout;
 
     @Inject Retrofit retrofitAdapter;
@@ -77,18 +78,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loginButton();
-            }
-        });
+        loginProgressBar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#ee00d4"), android.graphics.PorterDuff.Mode.SRC_ATOP);
     }
 
     private void loginUser(@NonNull final String username, @NonNull final String password) {
 
         Log.d(LOG_TAG, "loginUser(): Username: " + username);
 
+        loginProgressBar.setVisibility(View.VISIBLE);
         RetrofitInterface loginRequest = retrofitAdapter.create(RetrofitInterface.class);
         Call<GrantResponsePojo> call = loginRequest.loginUser(new GrantRequest(username,
                 password, getString(R.string.gfycat_client_id), getString(R.string.gfycat_client_secret)));
@@ -96,6 +93,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call<GrantResponsePojo> call, Response<GrantResponsePojo> response) {
+
+                loginProgressBar.setVisibility(View.INVISIBLE);
 
                 Log.d(LOG_TAG, "onResponse(): Response success: " + response.isSuccessful());
                 Log.d(LOG_TAG, "onResponse(): Response message: " + response.message());
@@ -121,6 +120,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<GrantResponsePojo> call, Throwable t) {
+                loginProgressBar.setVisibility(View.INVISIBLE);
                 displayLoginResponseSnackbar(getString(R.string.login_error_message));
             }
         });

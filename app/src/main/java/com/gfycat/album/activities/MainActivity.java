@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -12,16 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-import com.gfycat.album.DatabaseHelper;
+import com.gfycat.album.utils.DatabaseHelper;
 import com.gfycat.album.R;
 import com.gfycat.album.models.Gif;
-import com.gfycat.album.models.GifsCompletionView;
+import com.gfycat.album.ui.views.GifsCompletionView;
 import com.gfycat.album.models.Tag;
-import com.gfycat.album.ui.GifRecyclerViewAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
+import com.gfycat.album.ui.adapters.GifRecyclerViewAdapter;
 import com.tokenautocomplete.TokenCompleteTextView;
 import java.util.ArrayList;
 import butterknife.BindView;
@@ -35,18 +33,24 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
+    // DATABASE VARIABLES:
     private DatabaseHelper dbhelper = new DatabaseHelper(this);
+
+    // LAYOUT VARIABLES:
     private Unbinder unbinder;
 
-    // RECYCLERVIEW VARIABLES
-    private RecyclerViewDragDropManager dragDropManager;
+    // LOGGING VARIABLES:
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    // SEARCH VARIABLES
+    private String searchQuery = "";
+
+    // VIEW INJECTION VARIABLES:
+    @BindView(R.id.gif_completion_view) GifsCompletionView gifsCompletionView;
     @BindView(R.id.activity_main_recyclerview) RecyclerView gfyRecyclerView;
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
-
-    private GifsCompletionView completionView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
 //        dbhelper.deleteDB(); // //delete the db: remove it when actually in use.
         dbhelper.initialize();
-        Gif testGif = initTestGif("TEST GIF 2", "Hi there 2", "http://www.google.com/what2.mp4");
+        Gif testGif = initTestGif("TEST GIF 1", "Hi there 1", "http://www.google.com/what1.mp4");
         dbhelper.updateGifs(testGif);
 
         RealmResults result = dbhelper.query("cats");
@@ -86,47 +90,11 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         unbinder.unbind();
     }
 
-    private void initView() {
-        setSupportActionBar(toolbar);
-        initRecyclerView();
-        initCompletionView();
-    }
-
-    private void initRecyclerView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        gfyRecyclerView.setLayoutManager(layoutManager);
-    }
-
-    private void initCompletionView() {
-        //test section for completion view.
-        ArrayList<String> searchTerms = new ArrayList<>();
-        ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, searchTerms);
-
-        completionView = (GifsCompletionView)findViewById(R.id.searchView);
-        completionView.setTokenListener(this);
-        completionView.setAdapter(adapter);
-        completionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
-    }
-
-    private Gif initTestGif(String gifName, String desc, String videoUrl){
-        Tag testTag = new Tag("#cats");
-        Tag testTag2 = new Tag("#lol");
-        ArrayList<Tag> tagList = new ArrayList<>();
-        tagList.add(testTag);
-        tagList.add(testTag2);
-//        String videoUrl = "https://zippy.gfycat.com/IllfatedPleasantIrishterrier.webm";
-        String thumbnailUrl="https://thumbs.gfycat.com/AdmiredNiftyCatbird-mobile.jpg";
-//        String thumbnailUrl="https://thumbs.gfycat.com/IllfatedPleasantIrishterrier-mobile.jpg";
-        return new Gif(tagList, gifName, desc, videoUrl, thumbnailUrl, incrementIndex());
-    }
-
-    private void setRecyclerView(OrderedRealmCollection<Gif> data) {
-        GifRecyclerViewAdapter gifRecyclerViewAdapter = new GifRecyclerViewAdapter(data, this);
-        gfyRecyclerView.setAdapter(gifRecyclerViewAdapter);
-    }
+    /** ACTIVITY OVERRIDE METHODS ______________________________________________________________ **/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
@@ -135,6 +103,30 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchQuery = query;
+                displayGifsCompletionView(!searchQuery.isEmpty());
+                setCompletionView();
+                return true;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchQuery = "";
+                displayGifsCompletionView(false);
+                setCompletionView();
+                return true;
+            }
+        });
 
         return true;
     }
@@ -148,18 +140,11 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-//            Toast.makeText(this,"touch touch", Toast.LENGTH_LONG).show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    //increments the current index.
-    private int incrementIndex(){
-        return dbhelper.getIndex();
-    }
-
 
     @Override
     public void onTokenAdded(Object token) {
@@ -169,5 +154,73 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     @Override
     public void onTokenRemoved(Object token) {
         Toast.makeText(this, "token removed", Toast.LENGTH_SHORT).show();
+    }
+
+    /** LAYOUT METHODS _________________________________________________________________________ **/
+
+    private void initView() {
+        initToolbar();
+        initRecyclerView();
+        initCompletionView();
+    }
+
+    private void initToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setLogo(R.drawable.gfycatlogo);
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        gfyRecyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void initCompletionView() {
+        ArrayList<String> searchTerms = new ArrayList<>();
+        ArrayAdapter completionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, searchTerms);
+        gifsCompletionView.setTokenListener(this);
+        gifsCompletionView.setAdapter(completionAdapter);
+        gifsCompletionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
+    }
+
+    private void setRecyclerView(OrderedRealmCollection<Gif> data) {
+        GifRecyclerViewAdapter gifRecyclerViewAdapter = new GifRecyclerViewAdapter(data, this);
+        gfyRecyclerView.setAdapter(gifRecyclerViewAdapter);
+    }
+
+    private void setCompletionView() {
+        gifsCompletionView.clear();
+        String[] searchTerms = searchQuery.split("\\s+");
+        for (String term : searchTerms) {
+            gifsCompletionView.addObject(term);
+        }
+    }
+
+    // displayGifsCompletionView(): Shows/hides the gifsCompletionView.
+    private void displayGifsCompletionView(boolean isDisplay) {
+        if (isDisplay) {
+            gifsCompletionView.setVisibility(View.VISIBLE);
+        } else {
+            gifsCompletionView.setVisibility(View.GONE);
+        }
+    }
+
+    /** DATABASE METHODS _______________________________________________________________________ **/
+
+    private Gif initTestGif(String gifName, String desc, String videoUrl){
+        Tag testTag = new Tag("#cats");
+        Tag testTag2 = new Tag("#lol");
+        ArrayList<Tag> tagList = new ArrayList<>();
+        tagList.add(testTag);
+        tagList.add(testTag2);
+//        String videoUrl = "https://zippy.gfycat.com/IllfatedPleasantIrishterrier.webm";
+        String thumbnailUrl="https://thumbs.gfycat.com/AdmiredNiftyCatbird-mobile.jpg";
+//        String thumbnailUrl="https://thumbs.gfycat.com/IllfatedPleasantIrishterrier-mobile.jpg";
+        return new Gif(tagList, gifName, desc, videoUrl, thumbnailUrl, incrementIndex());
+    }
+
+    //increments the current index.
+    private int incrementIndex(){
+        return dbhelper.getIndex();
     }
 }

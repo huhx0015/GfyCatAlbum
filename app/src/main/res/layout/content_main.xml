@@ -5,20 +5,20 @@
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.gfycat.album.activities.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.gfycat.album.models.GifsCompletionView
-        android:id="@+id/searchView"
+    <com.gfycat.album.ui.views.GifsCompletionView
+        android:id="@+id/gif_completion_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:visibility="gone" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_main_recyclerview"
-        android:layout_below="@+id/searchView"
+        android:layout_below="@+id/gif_completion_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_anchor="@id/activity_main_layout"/>

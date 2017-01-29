@@ -2,17 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_login_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:id="@+id/login_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/homebg"
+        android:scaleType="fitStart" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/login_credentials_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_centerInParent="true"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp">
 
         <LinearLayout
-            android:id="@+id/login_credentials_container"
+            android:id="@+id/login_subcredentials_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone">
@@ -66,12 +77,33 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/login_button"
-            android:text="@string/login"
-            android:layout_width="wrap_content"
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+            android:id="@+id/login_progress_bar"
+            android:layout_marginBottom="64dp"
+            android:visibility="invisible"/>
+
+        <RelativeLayout
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/login_button_background"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/login_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
