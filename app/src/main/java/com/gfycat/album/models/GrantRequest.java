@@ -27,6 +27,7 @@ public class GrantRequest {
     public GrantRequest(String clientId, String clientSecret) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
+        this.grantType = GfyConstants.GFY_GRANT_TYPE_CLIENT;
     }
 
     public GrantRequest(String username, String password, String clientId, String clientSecret) {

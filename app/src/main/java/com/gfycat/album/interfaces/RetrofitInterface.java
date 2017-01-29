@@ -1,6 +1,7 @@
 package com.gfycat.album.interfaces;
 
 import com.gfycat.album.models.CreateGfycatPojo;
+import com.gfycat.album.models.CreateGfycatRequest;
 import com.gfycat.album.models.GetAlbumFoldersPojo;
 import com.gfycat.album.models.GetBookmarkPojo;
 import com.gfycat.album.models.GrantRequest;
@@ -51,8 +52,7 @@ public interface RetrofitInterface {
 
     // CREATE GFYCAT:
     @POST("gfycats")
-    Call<CreateGfycatPojo> createGfycat(@Field("fetchUrl") String fetchUrl,
-                                        @Field("title") String title);
+    Call<CreateGfycatPojo> createGfycat(@Body CreateGfycatRequest request);
 
     // SEARCH:
     @GET("gfycats/search?search_text={keywords}")
