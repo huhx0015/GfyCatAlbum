@@ -1,6 +1,7 @@
 package com.gfycat.album.activities;
 
 import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -58,7 +59,10 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
-        initView();
+        // TODO: Check if database is empty. If it is, we show NUX activity.
+        checkForEmptyDatabase();
+
+        initView(); // Initializes the view for this activity.
 
         //test initialize
 
@@ -206,6 +210,15 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     }
 
     /** DATABASE METHODS _______________________________________________________________________ **/
+
+    private void checkForEmptyDatabase() {
+        boolean databaseEmpty = false; // TODO: Change this value later.
+        if (databaseEmpty) {
+            Intent nuxIntent = new Intent(this, EmptyActivity.class);
+            startActivity(nuxIntent);
+            finish();
+        }
+    }
 
     private Gif initTestGif(String gifName, String desc, String videoUrl){
         Tag testTag = new Tag("#cats");

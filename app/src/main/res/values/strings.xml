@@ -13,4 +13,9 @@
     <string name="login_error_message">Unable to login, please try again.</string>
     <string name="title_activity_handle_share">HandleShareActivity</string>
 
+    <!--NUX-->
+    <string name="empty_space">Your space is empty</string>
+    <string name="empty_space_description">Go share any gif with GfyCatnip and\nyou will see it here</string>
+    <string name="search_gif_link_text"><u>Search for Awesome Gifs!</u></string>
+
 </resources>
