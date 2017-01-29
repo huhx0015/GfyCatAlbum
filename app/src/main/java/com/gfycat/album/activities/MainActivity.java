@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
                 searchQuery = query;
                 displayGifsCompletionView(!searchQuery.isEmpty());
                 setCompletionView();
+                updateSearchResults(query);
                 return true;
             }
         });
@@ -157,13 +158,11 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
     @Override
     public void onTokenAdded(Object token) {
-        Toast.makeText(this, "token added", Toast.LENGTH_SHORT).show();
         // TODO: Update the recyclerView with items with the tag.
     }
 
     @Override
     public void onTokenRemoved(Object token) {
-        Toast.makeText(this, "token removed", Toast.LENGTH_SHORT).show();
         // TODO: Update the recyclerView with items with the tag.
     }
 
@@ -285,5 +284,10 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     //increments the current index.
     private int incrementIndex(){
         return dbhelper.getIndex();
+    }
+
+    private void updateSearchResults(String query) {
+        RealmResults result = dbhelper.query(query);
+        setRecyclerView(result);
     }
 }
