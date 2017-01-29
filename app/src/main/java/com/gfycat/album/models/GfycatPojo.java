@@ -1,6 +1,8 @@
 package com.gfycat.album.models;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -116,7 +118,7 @@ public class GfycatPojo {
     private Integer views;
     @SerializedName("tags")
     @Expose
-    private Object tags;
+    private ArrayList<String> tags = null;
     @SerializedName("userName")
     @Expose
     private String userName;
@@ -424,13 +426,14 @@ public class GfycatPojo {
         this.views = views;
     }
 
-    public Object getTags() {
+    public ArrayList<String> getTags() {
         return tags;
     }
 
-    public void setTags(Object tags) {
+    public void setTags(ArrayList<String> tags) {
         this.tags = tags;
     }
+
 
     public String getUserName() {
         return userName;

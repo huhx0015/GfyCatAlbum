@@ -1,6 +1,7 @@
 package com.gfycat.album.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.gfycat.album.models.Gif;
 
@@ -38,16 +39,25 @@ public class DatabaseHelper {
 
     //copies to the realm db.
     public void updateGifs(Gif gif){
+
         realm.beginTransaction();
 
         //dedupe first
         String url = gif.getGyfcatURL();
+        Log.d("STEVE", url);
         RealmList<Gif> newList = new RealmList<>();
         newList.addAll(realm.where(Gif.class).equalTo("gyfcatURL", url).findAll());
 
+
         //only update if this item doesn't already exist in the db.
         if (newList.size() == 0){
+            Log.d("STEVE", "updating updateGfycatDB inside DB");
             realm.copyToRealm(gif);
+            realm.commitTransaction();
+        }
+        else
+        {
+            Log.d("STEVE", "not updateGfycatDB inside DB");
             realm.commitTransaction();
         }
     }
