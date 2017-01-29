@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
     /** DIALOG METHODS _________________________________________________________________________ **/
 
-    public void displayActionDialog(int index, String link) {
+    public void displayActionDialog(int index, final String url) {
         final Dialog actionDialog = new Dialog(this, R.style.AppTheme_Dialog);
         LayoutInflater inflater = LayoutInflater.from(this);
         View actionDialogView = inflater.inflate(R.layout.dialog_action, null);
@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Define share action here.
+                shareLinkIntent(url);
                 actionDialog.dismiss();
             }
         });
@@ -240,6 +240,13 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         });
 
         actionDialog.show();
+    }
+
+    private void shareLinkIntent(String url) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(Intent.createChooser(shareIntent, "Share GfyCat link using..."));
     }
 
     /** DATABASE METHODS _______________________________________________________________________ **/
