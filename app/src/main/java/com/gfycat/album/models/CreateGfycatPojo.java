@@ -9,15 +9,56 @@ import com.google.gson.annotations.SerializedName;
 
 public class CreateGfycatPojo {
 
+    @SerializedName("isOk")
+    @Expose
+    private Boolean isOk;
+    @SerializedName("gfyname")
+    @Expose
+    private String gfyname;
+    @SerializedName("secret")
+    @Expose
+    private String secret;
+    @SerializedName("uploadType")
+    @Expose
+    private String uploadType;
     @SerializedName("fetchUrl")
     @Expose
     private String fetchUrl;
-    @SerializedName("title")
-    @Expose
-    private String title;
     @SerializedName("errorMessage")
     @Expose
     private ErrorMessage errorMessage;
+
+    public Boolean getIsOk() {
+        return isOk;
+    }
+
+    public void setIsOk(Boolean isOk) {
+        this.isOk = isOk;
+    }
+
+    public String getGfyname() {
+        return gfyname;
+    }
+
+    public void setGfyname(String gfyname) {
+        this.gfyname = gfyname;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    public String getUploadType() {
+        return uploadType;
+    }
+
+    public void setUploadType(String uploadType) {
+        this.uploadType = uploadType;
+    }
 
     public String getFetchUrl() {
         return fetchUrl;
@@ -25,14 +66,6 @@ public class CreateGfycatPojo {
 
     public void setFetchUrl(String fetchUrl) {
         this.fetchUrl = fetchUrl;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public ErrorMessage getErrorMessage() {
