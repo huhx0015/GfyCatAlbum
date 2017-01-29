@@ -1,5 +1,6 @@
 package com.gfycat.album.activities;
 
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Toast;
 import com.gfycat.album.utils.DatabaseHelper;
 import com.gfycat.album.R;
@@ -207,6 +210,43 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         } else {
             gifsCompletionView.setVisibility(View.GONE);
         }
+    }
+
+    /** DIALOG METHODS _________________________________________________________________________ **/
+
+    public void displayActionDialog(int index, final String url) {
+        final Dialog actionDialog = new Dialog(this, R.style.AppTheme_Dialog);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View actionDialogView = inflater.inflate(R.layout.dialog_action, null);
+        actionDialog.setContentView(actionDialogView);
+
+        Button shareButton = (Button) actionDialog.findViewById(R.id.share_button);
+        Button editButton = (Button) actionDialog.findViewById(R.id.edit_button);
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareLinkIntent(url);
+                actionDialog.dismiss();
+            }
+        });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Define edit action here.
+                actionDialog.dismiss();
+            }
+        });
+
+        actionDialog.show();
+    }
+
+    private void shareLinkIntent(String url) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, url);
+        startActivity(Intent.createChooser(shareIntent, "Share GfyCat link using..."));
     }
 
     /** DATABASE METHODS _______________________________________________________________________ **/
