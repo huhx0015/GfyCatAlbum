@@ -174,31 +174,33 @@ public class HandleShareActivity extends AppCompatActivity {
         call.enqueue(new Callback<GfycatPojo>() {
             @Override
             public void onResponse(Call<GfycatPojo> call, Response<GfycatPojo> response) {
-                GfyItem gifResponse = response.body().getGfyItem();
-                ArrayList<Tag> tags = new ArrayList<>();
+                if (response.isSuccessful()) {
+                    GfyItem gifResponse = response.body().getGfyItem();
+                    ArrayList<Tag> tags = new ArrayList<>();
 
-                if (gifResponse.getTags() != null) {
-                    for (String item : gifResponse.getTags()) {
-                        Tag newTag = new Tag(item);
+                    if (gifResponse.getTags() != null) {
+                        for (String item : gifResponse.getTags()) {
+                            Tag newTag = new Tag(item);
+                            tags.add(newTag);
+                        }
+                    } else if (saveGfycatTags != null) {
+                        String[] tokens = saveGfycatTags.split("[ .,?!]+");
+                        for (String token : tokens) {
+                            Tag newTag = new Tag(token);
+                            tags.add(newTag);
+                        }
+                    } else {
+                        Log.d("STEVE", "forcing cat");
+                        Tag newTag = new Tag("cats");
                         tags.add(newTag);
                     }
-                }
-                else if (saveGfycatTags != null) {
-                    String[] tokens = saveGfycatTags.split("[ .,?!]+");
-                    for(String token: tokens) {
-                        Tag newTag = new Tag(token);
-                        tags.add(newTag);
-                    }
-                }
-                else{
-                    Log.d("STEVE", "forcing cat");
-                    Tag newTag = new Tag("cats");
-                    tags.add(newTag);
-                }
 
-                Gif newGif = new Gif(tags, saveGfycatName, saveGfycatDescription, gifResponse.getGifUrl(), gifResponse.getMobilePosterUrl(), dbHelper.getIndex());
-                dbHelper.updateGifs(newGif);
-                finish();
+                    Gif newGif = new Gif(tags, saveGfycatName, saveGfycatDescription, gifResponse.getGifUrl(), gifResponse.getMobilePosterUrl(), dbHelper.getIndex());
+                    dbHelper.updateGifs(newGif);
+                    finish();
+                } else {
+                    finish();
+                }
             }
 
             @Override
