@@ -6,11 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
-
 import com.gfycat.album.R;
 import com.gfycat.album.application.GfyApplication;
-
 import com.gfycat.album.constants.GfyConstants;
 import com.gfycat.album.data.GfyPreferences;
 import com.gfycat.album.interfaces.RetrofitInterface;
@@ -22,15 +19,27 @@ import com.gfycat.album.models.StatusGfycatPojo;
 import com.gfycat.album.models.Tag;
 import com.gfycat.album.utils.DatabaseHelper;
 import com.google.common.util.concurrent.Runnables;
-
-
 import java.util.ArrayList;
-
 import javax.inject.Inject;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import com.gfycat.album.R;
+import com.gfycat.album.application.GfyApplication;
+import com.gfycat.album.dialog.SaveGfycatDialog;
+import javax.inject.Inject;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import retrofit2.Retrofit;
 
 public class HandleShareActivity extends AppCompatActivity {
@@ -50,13 +59,33 @@ public class HandleShareActivity extends AppCompatActivity {
     @Inject
     Retrofit retrofitAdapter;
 
+    private Unbinder unbinder;
+
+    // SAVE GFYCAT VARIABLES
+    private String saveGfycatLink;
+    private String saveGfycatName;
+    private String saveGfycatTags;
+    private String saveGfycatDescription;
+
+    @Inject Retrofit retrofitAdapter;
+
+    @BindView(R.id.handle_share_progress_bar) ProgressBar handleShareProgressBar;
+    @BindView(R.id.handle_share_save_text) TextView handleShareSaveText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_handle_share);
+        unbinder = ButterKnife.bind(this);
 
         // Retrofit Dagger injection for this activity.
         ((GfyApplication) getApplication()).getApiComponent().inject(this);
+
+        initView();
 
         intent = getIntent();
         action = intent.getAction();
@@ -69,7 +98,17 @@ public class HandleShareActivity extends AppCompatActivity {
         }
     }
 
-    void handleViewAction() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+    // onBackPressed(): Don't allow users to press the back button.
+    @Override
+    public void onBackPressed() {}
+
+    void handleViewAction(){
         //pop up a dialog of what to do
         String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
 //        Toast.makeText(this,"got the action", Toast.LENGTH_LONG).show();
@@ -132,6 +171,7 @@ public class HandleShareActivity extends AppCompatActivity {
         });
     }
 
+
     void updateGfycatDB() {
         //FrightenedMassiveDoe
         RetrofitInterface statusInterface = retrofitAdapter.create(RetrofitInterface.class);
@@ -177,5 +217,31 @@ public class HandleShareActivity extends AppCompatActivity {
 
             }
         });
+
+    private void handleSendText(Intent intent) {
+        String sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (sharedText != null) {
+            String url = sharedText.substring(sharedText.indexOf("http"));
+            displaySaveGfycatDialog(url);
+        }
+    }
+
+    private void initView() {
+        handleShareProgressBar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#ee00d4"), android.graphics.PorterDuff.Mode.SRC_ATOP);
+    }
+
+    private void displaySaveGfycatDialog(String url) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        SaveGfycatDialog saveGfycatDialog = SaveGfycatDialog.newInstance(url, this);
+        saveGfycatDialog.show(fragmentManager, SaveGfycatDialog.class.getSimpleName());
+    }
+
+    public void saveGfycat(String link, String name, String tags, String description) {
+        this.saveGfycatLink = link;
+        this.saveGfycatName = name;
+        this.saveGfycatTags = tags;
+        this.saveGfycatDescription = description;
+
+        // TODO: Handle saving action here.
     }
 }
