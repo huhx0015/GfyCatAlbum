@@ -1,5 +1,7 @@
 package com.gfycat.album.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,9 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+
+import com.gfycat.album.MainActivity;
 import com.gfycat.album.R;
 import com.gfycat.album.application.GfyApplication;
 import com.gfycat.album.constants.GfyConstants;
+import com.gfycat.album.data.GfyPreferences;
 import com.gfycat.album.interfaces.RetrofitInterface;
 import com.gfycat.album.models.GrantRequest;
 import com.gfycat.album.models.GrantResponsePojo;
@@ -78,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void loginUser(@NonNull String username, @NonNull String password) {
+    private void loginUser(@NonNull final String username, @NonNull final String password) {
 
         Log.d(LOG_TAG, "loginUser(): Username: " + username);
 
@@ -94,8 +99,19 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "onResponse(): Response message: " + response.message());
 
                 if (response.isSuccessful()) {
-                    displayLoginResponseSnackbar("SUCCESS!");
-                    // TODO: Launch intent to MainActivity.
+
+                    GrantResponsePojo responsePojo = response.body();
+
+                    SharedPreferences gfyPrefs = GfyPreferences.initializePreferences(LoginActivity.this);
+                    GfyPreferences.setUserLoggedIn(true, gfyPrefs);
+                    GfyPreferences.setAccessToken(responsePojo.getAccessToken(), gfyPrefs);
+                    GfyPreferences.setRefreshToken(responsePojo.getRefreshToken(), gfyPrefs);
+
+                    // TODO: Very insecure, remove when unneeded.
+                    GfyPreferences.setLogin(username, gfyPrefs);
+                    GfyPreferences.setPassword(password, gfyPrefs);
+
+                    launchMainIntent();
                 } else {
                     displayLoginResponseSnackbar(getString(R.string.login_error_message));
                 }
@@ -118,5 +134,11 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
         snackbar.show();
+    }
+
+    private void launchMainIntent() {
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        startActivity(mainIntent);
+        finish();
     }
 }
