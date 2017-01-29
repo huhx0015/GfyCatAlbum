@@ -2,6 +2,7 @@ package com.gfycat.album.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -66,12 +67,18 @@ public class LoginActivity extends AppCompatActivity {
 
         // Retrofit Dagger injection for this activity.
         ((GfyApplication) getApplication()).getApiComponent().inject(this);
+
+        initView();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    private void initView() {
+        loginProgressBar.getIndeterminateDrawable().setColorFilter(Color.parseColor("#ee00d4"), android.graphics.PorterDuff.Mode.SRC_ATOP);
     }
 
     private void loginUser(@NonNull final String username, @NonNull final String password) {
