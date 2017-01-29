@@ -20,21 +20,21 @@ import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private DatabaseHelper dbhelper = new DatabaseHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DatabaseHelper dbhelper = new DatabaseHelper(this);
+
 
         //test initialize
 
-        dbhelper.deleteDB(); // //delete the db: remove it when actually in use.
+//        dbhelper.deleteDB(); // //delete the db: remove it when actually in use.
         dbhelper.initialize();
-
 
         Gif testGif = initTestGif();
         dbhelper.updateGifs(testGif);
+
 
         RealmResults result = dbhelper.query("cats");
         //sample code to get result
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (Gif curGif: newList) {
             String gfyURL = curGif.getGyfcatURL();
+            int index = curGif.getIndex();
             Log.d("onCreate: ", gfyURL);
         }
 
@@ -71,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
         tagList.add(testTag);
         tagList.add(testTag2);
         String videoUrl = "https://zippy.gfycat.com/AdmiredNiftyCatbird.webm";
+//        String videoUrl = "https://zippy.gfycat.com/IllfatedPleasantIrishterrier.webm";
         String thumbnailUrl="https://thumbs.gfycat.com/AdmiredNiftyCatbird-mobile.jpg";
-        return new Gif(tagList, "testCustomGifName", "this is a cat running into a door",videoUrl,thumbnailUrl);
+//        String thumbnailUrl="https://thumbs.gfycat.com/IllfatedPleasantIrishterrier-mobile.jpg";
+        return new Gif(tagList, "testCustomGifName", "this is a cat running into a door",videoUrl,thumbnailUrl, incrementIndex());
     }
 
     @Override
@@ -95,5 +98,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //increments the current index.
+    private int incrementIndex(){
+        return dbhelper.getIndex();
     }
 }
