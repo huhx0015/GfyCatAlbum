@@ -156,11 +156,13 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     @Override
     public void onTokenAdded(Object token) {
         Toast.makeText(this, "token added", Toast.LENGTH_SHORT).show();
+        // TODO: Update the recyclerView with items with the tag.
     }
 
     @Override
     public void onTokenRemoved(Object token) {
         Toast.makeText(this, "token removed", Toast.LENGTH_SHORT).show();
+        // TODO: Update the recyclerView with items with the tag.
     }
 
     /** LAYOUT METHODS _________________________________________________________________________ **/
