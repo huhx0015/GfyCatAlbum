@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
 //        dbhelper.deleteDB(); // //delete the db: remove it when actually in use.
         dbhelper.initialize();
-        Gif testGif = initTestGif("TEST GIF 2", "Hi there 2", "http://www.google.com/what2.mp4");
+        Gif testGif = initTestGif("TEST GIF 1", "Hi there 1", "http://www.google.com/what1.mp4");
         dbhelper.updateGifs(testGif);
 
         RealmResults result = dbhelper.query("cats");
