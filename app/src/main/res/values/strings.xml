@@ -8,7 +8,7 @@
     <!--LOGIN-->
     <string name="username_hint">Username</string>
     <string name="password_hint">Password</string>
-    <string name="login">LOGIN</string>
+    <string name="login">log in</string>
     <string name="retry">RETRY</string>
     <string name="login_error_message">Unable to login, please try again.</string>
 
