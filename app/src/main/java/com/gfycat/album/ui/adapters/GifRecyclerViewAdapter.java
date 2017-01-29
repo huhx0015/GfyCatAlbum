@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.gfycat.album.R;
 import com.gfycat.album.activities.MainActivity;
 import com.gfycat.album.models.Gif;
@@ -37,7 +36,13 @@ public class GifRecyclerViewAdapter extends RealmRecyclerViewAdapter<Gif, GifRec
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.adapter_gif, parent, false);
 
-        GifViewHolder viewHolder = new GifViewHolder(itemView, new GifViewHolder.OnViewHolderLongClickListener() {
+        GifViewHolder viewHolder = new GifViewHolder(itemView, new GifViewHolder.OnViewHolderClickListener() {
+            @Override
+            public void onClick(View caller, int position) {
+                Gif gifObject = getData().get(position);
+                ((MainActivity) context).launchVideoIntent(gifObject.getGyfcatURL());
+            }
+
             @Override
             public void onLongClick(View caller, int position) {
                 Gif gifObject = getData().get(position);
@@ -76,33 +81,41 @@ public class GifRecyclerViewAdapter extends RealmRecyclerViewAdapter<Gif, GifRec
         holder.descriptionText.setText(gifObject.getTextDescription());
     }
 
-    public static class GifViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
+    public static class GifViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         @BindView(R.id.gif) ImageView gifImageView;
         @BindView(R.id.title) TextView titleText;
         @BindView(R.id.tags) TextView tagsText;
         @BindView(R.id.user_description) TextView descriptionText;
 
-        public OnViewHolderLongClickListener viewHolderLongClickListener;
+        public OnViewHolderClickListener viewHolderClickListener;
 
-        public GifViewHolder(View view, OnViewHolderLongClickListener listener) {
+        public GifViewHolder(View view, OnViewHolderClickListener listener) {
             super(view);
             ButterKnife.bind(this, view);
 
             if (listener != null) {
-                viewHolderLongClickListener = listener;
+                viewHolderClickListener = listener;
+                view.getRootView().setOnClickListener(this);
                 view.getRootView().setOnLongClickListener(this);
             }
         }
 
         @Override
+        public void onClick(View v) {
+            int itemPos = getAdapterPosition();
+            viewHolderClickListener.onClick(v, itemPos);
+        }
+
+        @Override
         public boolean onLongClick(View v) {
             int itemPos = getAdapterPosition();
-            viewHolderLongClickListener.onLongClick(v, itemPos);
+            viewHolderClickListener.onLongClick(v, itemPos);
             return true;
         }
 
-        public interface OnViewHolderLongClickListener {
+        public interface OnViewHolderClickListener {
+            void onClick(View caller, int position);
             void onLongClick(View caller, int position);
         }
     }

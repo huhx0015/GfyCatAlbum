@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.gfycat.album.constants.GfyConstants;
 import com.gfycat.album.utils.DatabaseHelper;
 import com.gfycat.album.R;
 import com.gfycat.album.models.Gif;
@@ -214,7 +216,13 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         }
     }
 
-    /** DIALOG METHODS _________________________________________________________________________ **/
+    /** ACTION METHODS _________________________________________________________________________ **/
+
+    public void launchVideoIntent(String url) {
+        Intent videoIntent = new Intent(this, VideoActivity.class);
+        videoIntent.putExtra(GfyConstants.GFY_VIDEO_URL_INTENT_EXTRA, url);
+        startActivity(videoIntent);
+    }
 
     public void displayActionDialog(int index, final String url) {
         final Dialog actionDialog = new Dialog(this, R.style.AppTheme_Dialog);

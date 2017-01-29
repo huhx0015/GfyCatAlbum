@@ -10,6 +10,9 @@ public class GfyConstants {
     public static final String GFY_GRANT_TYPE_CLIENT = "client_credentials";
     public static final String GFY_GRANT_TYPE_PASSWORD = "password";
 
+    // EXTRAS:
+    public static final String GFY_VIDEO_URL_INTENT_EXTRA = "gfy_video_url_intent_extra";
+
     // LOGIN:
     public static final String GFY_LOGIN_STATE = "GFYCATNIPLOVE";
 
