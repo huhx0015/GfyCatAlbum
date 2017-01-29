@@ -9,7 +9,4 @@
 .externalNativeBuild
 /.idea/
 .idea/vcs.xml
-app/libs/
-app/src/main/res/drawable/
 /app/src/main/res/values/secret.xml
-src/main/res/values/secret.xml
