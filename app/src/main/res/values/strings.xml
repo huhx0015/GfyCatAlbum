@@ -1,4 +1,13 @@
 <resources>
+
+    <!--APPLICATION-->
     <string name="app_name">GfyCat Album</string>
     <string name="action_settings">Settings</string>
+
+    <!--LOGIN-->
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="retry">RETRY</string>
+    <string name="login_error_message">Unable to login, please try again.</string>
 </resources>
