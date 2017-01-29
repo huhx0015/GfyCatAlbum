@@ -1,4 +1,4 @@
-package com.gfycat.album;
+package com.gfycat.album.utils;
 
 import android.content.Context;
 

@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -13,9 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Toast;
-import com.gfycat.album.DatabaseHelper;
+import com.gfycat.album.utils.DatabaseHelper;
 import com.gfycat.album.R;
 import com.gfycat.album.models.Gif;
 import com.gfycat.album.models.GifsCompletionView;
@@ -86,10 +84,56 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         unbinder.unbind();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        // Associate searchable configuration with the SearchView
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_search) {
+//            Toast.makeText(this,"touch touch", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTokenAdded(Object token) {
+        Toast.makeText(this, "token added", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onTokenRemoved(Object token) {
+        Toast.makeText(this, "token removed", Toast.LENGTH_SHORT).show();
+    }
+
     private void initView() {
-        setSupportActionBar(toolbar);
+        initToolbar();
         initRecyclerView();
         initCompletionView();
+    }
+
+    private void initToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setLogo(R.drawable.gfycatlogo);
     }
 
     private void initRecyclerView() {
@@ -125,49 +169,8 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         gfyRecyclerView.setAdapter(gifRecyclerViewAdapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        // Associate searchable configuration with the SearchView
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-//            Toast.makeText(this,"touch touch", Toast.LENGTH_LONG).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     //increments the current index.
     private int incrementIndex(){
         return dbhelper.getIndex();
-    }
-
-
-    @Override
-    public void onTokenAdded(Object token) {
-        Toast.makeText(this, "token added", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onTokenRemoved(Object token) {
-        Toast.makeText(this, "token removed", Toast.LENGTH_SHORT).show();
     }
 }
