@@ -25,4 +25,14 @@
     <string name="share">Share</string>
     <string name="edit">Edit</string>
 
+    <!--SAVE DIALOG-->
+    <string name="save_dialog_message">Bookmark your GfyCat in GfyCatnip\nso you can use it later!</string>
+    <string name="link_hint">Link</string>
+    <string name="tag_hint">Hash Tags</string>
+    <string name="description_hint">Description</string>
+    <string name="gfy_name_hint">Gfy Name</string>
+    <string name="save">Save</string>
+    <string name="saving">Saving…</string>
+    <string name="cancel">Cancel</string>
+
 </resources>
