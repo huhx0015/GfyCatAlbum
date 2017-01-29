@@ -15,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -35,35 +36,35 @@ public interface RetrofitInterface {
 
     // GET BOOKMARK FOLDERS:
     @GET("me/bookmark-folders")
-    Call<GetBookmarkPojo> getBookmarkFolders();
+    Call<GetBookmarkPojo> getBookmarkFolders(@Header("Authorization") String token);
 
     // GET BOOKMARK BY ID:
     @GET("me/bookmarks/{gfyId}")
-    Call<MessageResponsePojo> getBookmark(@Path("gfyId") String gfyId);
+    Call<MessageResponsePojo> getBookmark(@Header("Authorization") String token, @Path("gfyId") String gfyId);
 
     // SAVE BOOKMARK:
     @PUT("me/bookmarks/{gfyId}")
-    Call<MessageResponsePojo> saveBookmark(@Path("gfyId") String gfyId);
+    Call<MessageResponsePojo> saveBookmark(@Header("Authorization") String token, @Path("gfyId") String gfyId);
 
     // GET ALBUM FOLDERS:
     @GET("me/album-folders")
-    Call<GetAlbumFoldersPojo> getAlbumFolders();
+    Call<GetAlbumFoldersPojo> getAlbumFolders(@Header("Authorization") String token);
 
     // GET ALBUM BY ID:
     @GET("users/{userId}/albums/{albumId}")
-    Call<MessageResponsePojo> getAlbum(@Path("userId") String userId, @Path("albumId") String albumId);
+    Call<MessageResponsePojo> getAlbum(@Header("Authorization") String token, @Path("userId") String userId, @Path("albumId") String albumId);
 
     // CREATE GFYCAT:
     @POST("gfycats")
-    Call<CreateGfycatPojo> createGfycat(@Body CreateGfycatRequest request);
+    Call<CreateGfycatPojo> createGfycat(@Header("Authorization") String token, @Body CreateGfycatRequest request);
 
     // GFYCAT UPLOAD STATUS:
     @GET("gfycats/fetch/status/{gfyname}")
-    Call<StatusGfycatPojo> checkUploadStatus(@Path("gfyname") String gfyname);
+    Call<StatusGfycatPojo> checkUploadStatus(@Header("Authorization") String token, @Path("gfyname") String gfyname);
 
     // GET GFYCAT BY ID:
     @GET("gfycats/{gfyid}")
-    Call<GfycatPojo> getGfyCat(@Path("gfyid") String gfyId);
+    Call<GfycatPojo> getGfyCat(@Header("Authorization") String token, @Path("gfyid") String gfyId);
 
     // SEARCH:
     @GET("gfycats/search?search_text={keywords}")
