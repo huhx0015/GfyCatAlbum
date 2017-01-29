@@ -27,7 +27,7 @@ public class GfyApplication extends Application {
                 .build();
     }
 
-    public ApiComponent getNetComponent() {
+    public ApiComponent getApiComponent() {
         return apiComponent;
     }
 }

@@ -11,8 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import com.gfycat.album.R;
+import com.gfycat.album.application.GfyApplication;
 import com.gfycat.album.constants.GfyConstants;
 import com.gfycat.album.interfaces.RetrofitInterface;
+import com.gfycat.album.models.GrantRequest;
 import com.gfycat.album.models.GrantResponsePojo;
 import javax.inject.Inject;
 import butterknife.BindView;
@@ -43,9 +45,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.login_button)
     public void loginButton() {
-
-        Log.d(LOG_TAG, "loginButton()");
-
         String username = loginField.getText().toString();
         String password = passwordField.getText().toString();
 
@@ -57,6 +56,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         unbinder = ButterKnife.bind(this);
+
+        // Retrofit Dagger injection for this activity.
+        ((GfyApplication) getApplication()).getApiComponent().inject(this);
 
         initView();
     }
@@ -81,9 +83,8 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "loginUser(): Username: " + username);
 
         RetrofitInterface loginRequest = retrofitAdapter.create(RetrofitInterface.class);
-        Call<GrantResponsePojo> call = loginRequest.loginUser(GfyConstants.GFY_GRANT_TYPE_PASSWORD,
-                getString(R.string.gfycat_client_id), getString(R.string.gfycat_client_secret),
-                username, password);
+        Call<GrantResponsePojo> call = loginRequest.loginUser(new GrantRequest(username,
+                password, getString(R.string.gfycat_client_id), getString(R.string.gfycat_client_secret)));
         call.enqueue(new Callback<GrantResponsePojo>() {
 
             @Override

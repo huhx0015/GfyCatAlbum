@@ -19,6 +19,6 @@ public class GfyConstants {
     public static final String GFY_PREFERENCES_REFRESH_TOKEN = "gfy_refresh_token";
 
     // URL:
-    public static final String BASE_URL = "https://api.gfycat.com/v1";
-    public static final String TEST_URL = "https://api.gfycat.com/v1test";
+    public static final String BASE_URL = "https://api.gfycat.com/v1/";
+    public static final String TEST_URL = "https://api.gfycat.com/v1test/";
 }

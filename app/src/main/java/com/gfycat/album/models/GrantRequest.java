@@ -1,9 +1,10 @@
 package com.gfycat.album.models;
 
+import com.gfycat.album.constants.GfyConstants;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GrantPojo {
+public class GrantRequest {
 
     @SerializedName("grant_type")
     @Expose
@@ -15,11 +16,26 @@ public class GrantPojo {
     @Expose
     private String clientSecret;
     @SerializedName("username")
+
     @Expose
     private String username;
+
     @SerializedName("password")
     @Expose
     private String password;
+
+    public GrantRequest(String clientId, String clientSecret) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+    }
+
+    public GrantRequest(String username, String password, String clientId, String clientSecret) {
+        this.username = username;
+        this.password = password;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.grantType = GfyConstants.GFY_GRANT_TYPE_PASSWORD;
+    }
 
     public String getGrantType() {
         return grantType;
