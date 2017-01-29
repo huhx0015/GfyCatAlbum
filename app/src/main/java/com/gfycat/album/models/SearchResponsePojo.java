@@ -1,8 +1,6 @@
-
 package com.gfycat.album.models;
 
 import java.util.List;
-import com.gfycat.album.GfycatPojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

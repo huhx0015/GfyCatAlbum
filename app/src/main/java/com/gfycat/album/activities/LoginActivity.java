@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import com.gfycat.album.MainActivity;
 import com.gfycat.album.R;
 import com.gfycat.album.application.GfyApplication;
 import com.gfycat.album.data.GfyPreferences;

@@ -1,35 +1,52 @@
-package com.gfycat.album;
+package com.gfycat.album.activities;
 
 import android.app.SearchManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
+import com.gfycat.album.DatabaseHelper;
+import com.gfycat.album.R;
 import com.gfycat.album.models.Gif;
 import com.gfycat.album.models.Tag;
+import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity {
 
+    /** CLASS VARIABLES ________________________________________________________________________ **/
+
     private DatabaseHelper dbhelper = new DatabaseHelper(this);
+    private Unbinder unbinder;
+
+    // RECYCLERVIEW VARIABLES
+    private RecyclerViewDragDropManager dragDropManager;
+
+    @BindView(R.id.activity_main_recyclerview) RecyclerView gfyRecyclerView;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+
+    /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        unbinder = ButterKnife.bind(this);
 
+        initView();
 
         //test initialize
 
@@ -53,11 +70,22 @@ public class MainActivity extends AppCompatActivity {
             Log.d("onCreate: ", gfyURL);
         }
 
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
 
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private void initView() {
         setSupportActionBar(toolbar);
+        initRecyclerView();
+    }
+
+    private void initRecyclerView() {
+        dragDropManager = new RecyclerViewDragDropManager();
+        
     }
 
     private Gif initTestGif(){
