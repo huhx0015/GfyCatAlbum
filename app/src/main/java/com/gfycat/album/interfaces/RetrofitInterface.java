@@ -4,10 +4,13 @@ import com.gfycat.album.models.CreateGfycatPojo;
 import com.gfycat.album.models.CreateGfycatRequest;
 import com.gfycat.album.models.GetAlbumFoldersPojo;
 import com.gfycat.album.models.GetBookmarkPojo;
+import com.gfycat.album.models.GfycatPojo;
 import com.gfycat.album.models.GrantRequest;
 import com.gfycat.album.models.GrantResponsePojo;
 import com.gfycat.album.models.MessageResponsePojo;
 import com.gfycat.album.models.SearchResponsePojo;
+import com.gfycat.album.models.StatusGfycatPojo;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -53,6 +56,14 @@ public interface RetrofitInterface {
     // CREATE GFYCAT:
     @POST("gfycats")
     Call<CreateGfycatPojo> createGfycat(@Body CreateGfycatRequest request);
+
+    // GFYCAT UPLOAD STATUS:
+    @GET("gfycats/fetch/status/{gfyname}")
+    Call<StatusGfycatPojo> checkUploadStatus(@Path("gfyname") String gfyname);
+
+    // GET GFYCAT BY ID:
+    @GET("gfycats/{gfyid}")
+    Call<GfycatPojo> getGfyCat(@Path("gfyid") String gfyId);
 
     // SEARCH:
     @GET("gfycats/search?search_text={keywords}")
