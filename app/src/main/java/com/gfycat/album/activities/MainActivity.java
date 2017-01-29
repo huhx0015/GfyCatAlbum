@@ -4,6 +4,8 @@ import android.app.SearchManager;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -11,24 +13,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.gfycat.album.DatabaseHelper;
 import com.gfycat.album.R;
 import com.gfycat.album.models.Gif;
 import com.gfycat.album.models.GifsCompletionView;
 import com.gfycat.album.models.Tag;
-<<<<<<< HEAD:app/src/main/java/com/gfycat/album/activities/MainActivity.java
+import com.gfycat.album.ui.GifRecyclerViewAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
-=======
 import com.tokenautocomplete.TokenCompleteTextView;
-
->>>>>>> 5a00db723fd76ef846757072ad0bd73167a6c1bb:app/src/main/java/com/gfycat/album/MainActivity.java
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.realm.OrderedRealmCollection;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
     private DatabaseHelper dbhelper = new DatabaseHelper(this);
-<<<<<<< HEAD:app/src/main/java/com/gfycat/album/activities/MainActivity.java
     private Unbinder unbinder;
 
     // RECYCLERVIEW VARIABLES
@@ -47,9 +45,8 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     @BindView(R.id.toolbar) Toolbar toolbar;
 
     /** ACTIVITY LIFECYCLE METHODS _____________________________________________________________ **/
-=======
+
     private GifsCompletionView completionView;
->>>>>>> 5a00db723fd76ef846757072ad0bd73167a6c1bb:app/src/main/java/com/gfycat/album/MainActivity.java
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +60,8 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
 
 //        dbhelper.deleteDB(); // //delete the db: remove it when actually in use.
         dbhelper.initialize();
-        Gif testGif = initTestGif();
+        Gif testGif = initTestGif("TEST GIF 2", "Hi there 2", "http://www.google.com/what2.mp4");
         dbhelper.updateGifs(testGif);
-
 
         RealmResults result = dbhelper.query("cats");
         //sample code to get result
@@ -80,7 +76,8 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
             Log.d("onCreate: ", gfyURL);
         }
 
-<<<<<<< HEAD:app/src/main/java/com/gfycat/album/activities/MainActivity.java
+        // Test RecyclerView:
+        setRecyclerView(result);
     }
 
     @Override
@@ -92,18 +89,12 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
     private void initView() {
         setSupportActionBar(toolbar);
         initRecyclerView();
+        initCompletionView();
     }
 
     private void initRecyclerView() {
-        dragDropManager = new RecyclerViewDragDropManager();
-        
-=======
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        initCompletionView();
-
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        gfyRecyclerView.setLayoutManager(layoutManager);
     }
 
     private void initCompletionView() {
@@ -115,20 +106,23 @@ public class MainActivity extends AppCompatActivity  implements TokenCompleteTex
         completionView.setTokenListener(this);
         completionView.setAdapter(adapter);
         completionView.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
->>>>>>> 5a00db723fd76ef846757072ad0bd73167a6c1bb:app/src/main/java/com/gfycat/album/MainActivity.java
     }
 
-    private Gif initTestGif(){
+    private Gif initTestGif(String gifName, String desc, String videoUrl){
         Tag testTag = new Tag("#cats");
         Tag testTag2 = new Tag("#lol");
         ArrayList<Tag> tagList = new ArrayList<>();
         tagList.add(testTag);
         tagList.add(testTag2);
-        String videoUrl = "https://zippy.gfycat.com/AdmiredNiftyCatbird.webm";
 //        String videoUrl = "https://zippy.gfycat.com/IllfatedPleasantIrishterrier.webm";
         String thumbnailUrl="https://thumbs.gfycat.com/AdmiredNiftyCatbird-mobile.jpg";
 //        String thumbnailUrl="https://thumbs.gfycat.com/IllfatedPleasantIrishterrier-mobile.jpg";
-        return new Gif(tagList, "testCustomGifName", "this is a cat running into a door",videoUrl,thumbnailUrl, incrementIndex());
+        return new Gif(tagList, gifName, desc, videoUrl, thumbnailUrl, incrementIndex());
+    }
+
+    private void setRecyclerView(OrderedRealmCollection<Gif> data) {
+        GifRecyclerViewAdapter gifRecyclerViewAdapter = new GifRecyclerViewAdapter(data, this);
+        gfyRecyclerView.setAdapter(gifRecyclerViewAdapter);
     }
 
     @Override
