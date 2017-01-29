@@ -28,7 +28,7 @@ public class Gif extends RealmObject{
     public Gif() {
     }
 
-    public Gif (ArrayList<Tag> tags, @Nullable String userGifName, @Nullable String textDescription, String gyfcatURL, String thumbnailURL){
+    public Gif (ArrayList<Tag> tags, @Nullable String userGifName, @Nullable String textDescription, String gyfcatURL, String thumbnailURL, int index){
 
         TagList = new RealmList<>();
 
@@ -39,6 +39,7 @@ public class Gif extends RealmObject{
         this.textDescription = textDescription;
         this.gyfcatURL = gyfcatURL;
         this.thumbnailURL = thumbnailURL;
+        this.index = index;
     }
 
 
@@ -82,11 +83,11 @@ public class Gif extends RealmObject{
         this.thumbnailURL = thumbnailURL;
     }
 
-    public Integer getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(Integer index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 }

@@ -5,6 +5,8 @@ import android.content.Context;
 import com.gfycat.album.models.Gif;
 
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.internal.async.QueryUpdateTask;
 
@@ -34,12 +36,20 @@ public class DatabaseHelper {
         realm.deleteRealm(realm.getConfiguration());
     }
 
+    //copies to the realm db.
     public void updateGifs(Gif gif){
         realm.beginTransaction();
-        //copies to the realm db.
-        realm.copyToRealm(gif);
-        realm.commitTransaction();
 
+        //dedupe first
+        String url = gif.getGyfcatURL();
+        RealmList<Gif> newList = new RealmList<>();
+        newList.addAll(realm.where(Gif.class).equalTo("gyfcatURL", url).findAll());
+
+        //only update if this item doesn't already exist in the db.
+        if (newList.size() == 0){
+            realm.copyToRealm(gif);
+            realm.commitTransaction();
+        }
     }
 
     public RealmResults query(String queryString) {
@@ -56,5 +66,13 @@ public class DatabaseHelper {
         return result;
     }
 
+
+    public int getIndex() {
+
+        if (realm.where(Gif.class).findAll().max("index") == null)
+            return 1;
+
+        return realm.where(Gif.class).findAll().max("index").intValue() + 1;
+    }
 
 }
