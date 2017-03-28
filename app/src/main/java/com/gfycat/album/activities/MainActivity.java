@@ -17,8 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Toast;
-
 import com.gfycat.album.constants.GfyConstants;
 import com.gfycat.album.utils.DatabaseHelper;
 import com.gfycat.album.R;
